@@ -1,5 +1,5 @@
 /**
- * Initial catalog data: one store, categories, Toyota vehicle tree and a
+ * Initial catalog data: one store, categories, the Toyota Camry generations and a
  * sample inventory of used Camry parts.
  *
  * This file is dependency-free on purpose — it is used by the demo database
@@ -38,8 +38,6 @@ export const SEED_MAKES = [{ id: uuid("a0000000", 1), slug: "toyota", name: "Toy
 
 export const SEED_MODELS = [
   { id: uuid("b0000000", 1), makeId: SEED_MAKES[0].id, slug: "camry", name: "Camry" },
-  { id: uuid("b0000000", 2), makeId: SEED_MAKES[0].id, slug: "corolla", name: "Corolla" },
-  { id: uuid("b0000000", 3), makeId: SEED_MAKES[0].id, slug: "rav4", name: "RAV4" },
 ];
 
 export const SEED_GENERATIONS: {
@@ -57,8 +55,6 @@ export const SEED_GENERATIONS: {
   { modelId: SEED_MODELS[0].id, slug: "camry-xv55", name: "Camry XV55", code: "XV55", yearFrom: 2014, yearTo: 2017 },
   { modelId: SEED_MODELS[0].id, slug: "camry-xv70", name: "Camry XV70", code: "XV70", yearFrom: 2017, yearTo: 2024 },
   { modelId: SEED_MODELS[0].id, slug: "camry-xv80", name: "Camry XV80", code: "XV80", yearFrom: 2024, yearTo: null },
-  { modelId: SEED_MODELS[1].id, slug: "corolla-e210", name: "Corolla E210", code: "E210", yearFrom: 2018, yearTo: null },
-  { modelId: SEED_MODELS[2].id, slug: "rav4-xa50", name: "RAV4 XA50", code: "XA50", yearFrom: 2018, yearTo: null },
 ].map((g, i) => ({ ...g, id: uuid("d0000000", i + 1) }));
 
 const cat = (slug: string) => SEED_CATEGORIES.find((c) => c.slug === slug)!.id;
@@ -74,9 +70,9 @@ interface Template {
 }
 
 const TEMPLATES: Template[] = [
-  { title: { ka: "წინა ფარი მარცხენა", en: "Front headlight, left", ru: "Фара передняя левая" }, category: "lighting", icon: "headlight", oem: "81150-", basePrice: 380, gens: ["camry-xv70", "camry-xv55", "camry-xv50", "camry-xv40", "corolla-e210"] },
+  { title: { ka: "წინა ფარი მარცხენა", en: "Front headlight, left", ru: "Фара передняя левая" }, category: "lighting", icon: "headlight", oem: "81150-", basePrice: 380, gens: ["camry-xv70", "camry-xv55", "camry-xv50", "camry-xv40"] },
   { title: { ka: "წინა ფარი მარჯვენა", en: "Front headlight, right", ru: "Фара передняя правая" }, category: "lighting", icon: "headlight", oem: "81110-", basePrice: 380, gens: ["camry-xv70", "camry-xv55", "camry-xv50"] },
-  { title: { ka: "უკანა ფარი მარცხენა", en: "Tail light, left", ru: "Фонарь задний левый" }, category: "lighting", icon: "taillight", oem: "81560-", basePrice: 160, gens: ["camry-xv70", "camry-xv55", "camry-xv40", "rav4-xa50"] },
+  { title: { ka: "უკანა ფარი მარცხენა", en: "Tail light, left", ru: "Фонарь задний левый" }, category: "lighting", icon: "taillight", oem: "81560-", basePrice: 160, gens: ["camry-xv70", "camry-xv55", "camry-xv40"] },
   { title: { ka: "წინა ბამპერი", en: "Front bumper", ru: "Бампер передний" }, category: "body", icon: "bumper", oem: "52119-", basePrice: 420, gens: ["camry-xv70", "camry-xv55", "camry-xv50", "camry-xv80"] },
   { title: { ka: "უკანა ბამპერი", en: "Rear bumper", ru: "Бампер задний" }, category: "body", icon: "bumper", oem: "52159-", basePrice: 360, gens: ["camry-xv70", "camry-xv50"] },
   { title: { ka: "კაპოტი", en: "Hood", ru: "Капот" }, category: "body", icon: "hood", oem: "53301-", basePrice: 450, gens: ["camry-xv70", "camry-xv55", "camry-xv40"] },
@@ -95,7 +91,7 @@ const TEMPLATES: Template[] = [
   { title: { ka: "მულტიმედიის ეკრანი", en: "Multimedia display", ru: "Мультимедийный дисплей" }, category: "electrical", icon: "display", oem: "86140-", basePrice: 650, gens: ["camry-xv70", "camry-xv55"] },
   { title: { ka: "მძღოლის სავარძელი", en: "Driver seat", ru: "Сиденье водителя" }, category: "interior", icon: "seat", oem: "71100-", basePrice: 540, gens: ["camry-xv70", "camry-xv50"] },
   { title: { ka: "შენადნობის დისკი R17", en: "Alloy wheel R17", ru: "Диск литой R17" }, category: "wheels", icon: "wheel", oem: "42611-", basePrice: 260, gens: ["camry-xv70", "camry-xv55", "camry-xv50"] },
-  { title: { ka: "შენადნობის დისკი R18", en: "Alloy wheel R18", ru: "Диск литой R18" }, category: "wheels", icon: "wheel", oem: "42611-", basePrice: 340, gens: ["camry-xv70", "rav4-xa50"] },
+  { title: { ka: "შენადნობის დისკი R18", en: "Alloy wheel R18", ru: "Диск литой R18" }, category: "wheels", icon: "wheel", oem: "42611-", basePrice: 340, gens: ["camry-xv70"] },
 ];
 
 const CONDITIONS = ["used", "like_new", "used", "used", "damaged", "new"] as const;

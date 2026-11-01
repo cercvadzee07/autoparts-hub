@@ -6,6 +6,10 @@
 export const brand = {
   name: "AutoParts Hub",
   shortName: "AutoParts",
+  /** Wordmark split: first part white, accent part red. */
+  wordmark: { main: "AutoParts", accent: "Hub" },
+  /** Small line under the logo (not translated — part of the brand). */
+  tagline: "USED TOYOTA PARTS • GEORGIA",
   /** Two-letter monogram used in the logo mark and favicon. */
   monogram: "AP",
   /** Prefix for order numbers, e.g. AP-1001. */
@@ -32,8 +36,7 @@ export const brand = {
       ru: "Пн–Сб, 10:00–19:00",
     },
   },
-  /** Hero background. Replace with a real photo (e.g. /images/hero-camry.jpg). */
-  heroImage: null as string | null,
+  // Hero/category photos: drop files into public/images (see src/lib/site-images.ts).
   currency: "GEL",
 } as const;
 

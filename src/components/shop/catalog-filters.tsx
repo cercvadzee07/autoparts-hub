@@ -20,10 +20,8 @@ export function CatalogFilters({
   idPrefix: string;
 }) {
   const t = getDictionary(locale);
-  const models = vehicles.flatMap((m) => m.models.map((model) => ({ ...model, label: `${m.name} ${model.name}` })));
-  const gens = filters.model
-    ? (models.find((m) => m.slug === filters.model)?.generations ?? [])
-    : models.flatMap((m) => m.generations);
+  // The shop sells Camry parts only, so the filter starts at the generation.
+  const gens = vehicles.flatMap((m) => m.models.flatMap((model) => model.generations));
   const id = (name: string) => `${idPrefix}-${name}`;
   const years: number[] = [];
   for (let y = new Date().getFullYear(); y >= 2000; y--) years.push(y);
@@ -32,16 +30,6 @@ export function CatalogFilters({
     <form action={`/${locale}/catalog`} className="space-y-5">
       {filters.q && <input type="hidden" name="q" value={filters.q} />}
       {filters.sort && filters.sort !== "newest" && <input type="hidden" name="sort" value={filters.sort} />}
-
-      <div>
-        <label htmlFor={id("model")} className={labelStyles}>{t.catalog.model}</label>
-        <AutoSubmitSelect id={id("model")} name="model" defaultValue={filters.model ?? ""}>
-          <option value="">{t.common.all}</option>
-          {models.map((m) => (
-            <option key={m.id} value={m.slug}>{m.label}</option>
-          ))}
-        </AutoSubmitSelect>
-      </div>
 
       <div>
         <label htmlFor={id("generation")} className={labelStyles}>{t.catalog.generation}</label>

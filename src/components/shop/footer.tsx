@@ -41,6 +41,9 @@ export function Footer({ locale, categories }: { locale: Locale; categories: Cat
               <Link href={`/${locale}/vin-request`} className="text-muted hover:text-text">{t.nav.vin}</Link>
             </li>
             <li>
+              <Link href={`/${locale}/about`} className="text-muted hover:text-text">{t.nav.about}</Link>
+            </li>
+            <li>
               <Link href={`/${locale}/cart`} className="text-muted hover:text-text">{t.nav.cart}</Link>
             </li>
           </ul>

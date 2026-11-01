@@ -97,9 +97,11 @@ const icons = {
 };
 
 const out = join(process.cwd(), "public", "parts");
-mkdirSync(out, { recursive: true });
+// Light-stroke icons for dark surfaces, dark-stroke copies (parts/dark/) for light surfaces.
+mkdirSync(join(out, "dark"), { recursive: true });
 for (const [name, body] of Object.entries(icons)) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">${body.replace(/\s+/g, " ").trim()}</svg>\n`;
   writeFileSync(join(out, `${name}.svg`), svg);
+  writeFileSync(join(out, "dark", `${name}.svg`), svg.replaceAll("#d4d4d8", "#3f3f46").replaceAll("#fff", "#71717a"));
 }
 console.log(`Wrote ${Object.keys(icons).length} icons to ${out}`);

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SlidersHorizontal, SearchX } from "lucide-react";
+import { Search, SlidersHorizontal, SearchX } from "lucide-react";
 import { isLocale } from "@/i18n/config";
 import { fmt, getDictionary } from "@/i18n";
 import { getRepository } from "@/lib/data";
@@ -52,11 +52,28 @@ export default async function CatalogPage({ params, searchParams }: PageProps<"/
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <div className="mb-6 flex flex-col gap-1">
-        <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          {filters.q ? `“${filters.q}”` : t.catalog.title}
-        </h1>
-        <p className="text-sm text-muted">{fmt(t.common.results, { count: result.total })}</p>
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            {filters.q ? `“${filters.q}”` : t.catalog.title}
+          </h1>
+          <p className="mt-1 text-sm text-muted">{fmt(t.common.results, { count: result.total })}</p>
+        </div>
+        <form action={`/${locale}/catalog`} role="search" className="flex w-full overflow-hidden rounded-xl md:max-w-md">
+          {Object.entries(linkParams).map(([k, v]) => (v && k !== "q" ? <input key={k} type="hidden" name={k} value={v} /> : null))}
+          <label className="relative flex-1">
+            <span className="sr-only">{t.common.search}</span>
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-500" aria-hidden />
+            <input
+              type="search"
+              name="q"
+              defaultValue={filters.q}
+              placeholder={t.home.searchShort}
+              className="h-12 w-full bg-white pl-10 pr-3 text-[15px] text-zinc-900 placeholder:text-zinc-500 focus:outline-none"
+            />
+          </label>
+          <button type="submit" className="bg-brand px-5 text-sm font-bold text-white hover:bg-brand-hover">{t.common.search}</button>
+        </form>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">

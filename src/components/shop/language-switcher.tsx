@@ -19,7 +19,7 @@ function Switcher({ className }: { className?: string }) {
   };
 
   return (
-    <nav aria-label={dict.nav.language} className={cn("flex items-center rounded-lg border border-line p-0.5", className)}>
+    <nav aria-label={dict.nav.language} className={cn("flex items-center gap-1.5", className)}>
       {locales.map((l) => (
         <Link
           key={l}
@@ -29,8 +29,10 @@ function Switcher({ className }: { className?: string }) {
           aria-current={l === locale ? "true" : undefined}
           title={localeNames[l]}
           className={cn(
-            "rounded-md px-2 py-1 text-xs font-semibold uppercase tracking-wide transition-colors",
-            l === locale ? "bg-surface-3 text-text" : "text-subtle hover:text-text",
+            "rounded-lg border px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition-colors",
+            l === locale
+              ? "border-brand bg-brand text-white"
+              : "border-line-strong bg-surface-2 text-muted hover:border-muted hover:text-text",
           )}
         >
           {l === "ka" ? "ქარ" : l === "ru" ? "Рус" : "Eng"}

@@ -1,19 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, BadgeCheck, Camera, Clock, MapPin, PhoneCall, Search, Truck } from "lucide-react";
+import { ArrowRight, Clock, Headset, MapPin, PhoneCall, Search, Send, ShieldCheck, Truck } from "lucide-react";
 import { brand } from "@/config/brand";
 import { isLocale, siteUrl } from "@/i18n/config";
-import { fmt, getDictionary } from "@/i18n";
+import { getDictionary } from "@/i18n";
 import { getRepository } from "@/lib/data";
 import { jsonLd } from "@/lib/seo";
-import { telHref } from "@/lib/utils";
-import { buttonStyles, cardStyles, sectionTitle } from "@/components/ui/styles";
+import { categoryImage, heroImage } from "@/lib/site-images";
+import { localized, telHref } from "@/lib/utils";
+import { buttonStyles, sectionTitle } from "@/components/ui/styles";
 import { ProductGrid } from "@/components/shop/product-card";
 import { SedanIllustration } from "@/components/shop/sedan-illustration";
-import { VehicleSelector } from "@/components/shop/vehicle-selector";
-
-const BENEFIT_ICONS = [BadgeCheck, Camera, PhoneCall, Truck];
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -21,15 +19,16 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const t = getDictionary(locale);
   const repo = getRepository();
 
-  const [vehicles, categories, counts, featured, recent] = await Promise.all([
+  const [vehicles, categories, featured, recent] = await Promise.all([
     repo.getVehicleTree(),
     repo.getCategories(),
-    repo.getCategoryCounts(),
     repo.searchProducts({ featured: true, statuses: ["available"], pageSize: 8 }),
     repo.searchProducts({ statuses: ["available"], sort: "newest", pageSize: 8 }),
   ]);
-  const totalInStock = Object.values(counts).reduce((a, b) => a + b, 0);
-  const camryGenerations = vehicles.flatMap((m) => m.models).find((m) => m.slug === "camry")?.generations.length ?? 0;
+  const generations = [...(vehicles.flatMap((m) => m.models).find((m) => m.slug === "camry")?.generations ?? [])].sort(
+    (a, b) => a.yearFrom - b.yearFrom,
+  );
+  const hero = heroImage();
 
   const organization = {
     "@context": "https://schema.org",
@@ -54,146 +53,175 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(organization) }} />
 
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-b border-line">
-        <div className="hero-glow absolute inset-0" aria-hidden />
-        <div className="grid-lines absolute inset-0 opacity-60" aria-hidden />
-        <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-14 sm:px-6 sm:pt-20 lg:px-8 lg:pb-16 lg:pt-24">
-          <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
-            <div className="animate-fade-up">
-              <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface/70 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-muted">
-                <span className="size-1.5 rounded-full bg-brand" aria-hidden />
-                {t.home.eyebrow}
-              </p>
-              <h1
-                className={`font-display font-semibold leading-[1.1] tracking-tight text-balance ${
-                  // Georgian words are long; a slightly smaller scale keeps the hero to ~4 lines.
-                  locale === "ka" ? "text-[1.8rem] sm:text-[2.6rem] lg:text-[3.1rem]" : "text-[2.1rem] sm:text-5xl lg:text-[3.6rem]"
-                }`}
-              >
-                {t.home.heroTitle}
-              </h1>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{t.home.heroText}</p>
+      <section className="relative isolate overflow-hidden border-b border-line bg-[#0b0b0e]">
+        {hero ? (
+          <>
+            <Image src={hero} alt="Toyota Camry" fill priority sizes="100vw" className="-z-20 object-cover object-[70%_center]" />
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#0b0b0e] via-[#0b0b0e]/80 to-transparent" aria-hidden />
+          </>
+        ) : (
+          <div className="absolute inset-0 -z-10" aria-hidden>
+            {/* Showroom backdrop: window light, floor glow */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_90px,rgb(255_255_255/0.025)_90px,rgb(255_255_255/0.025)_160px)]" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#16161a] to-transparent" />
+            <div className="absolute bottom-[12%] right-[-5%] h-48 w-[70%] rounded-[50%] bg-brand/20 blur-3xl" />
+          </div>
+        )}
+        {/* Red diagonal accent stripes */}
+        <div className="pointer-events-none absolute -right-16 -top-10 -z-10 flex rotate-[35deg] gap-5" aria-hidden>
+          <span className="h-80 w-10 bg-brand/90" />
+          <span className="h-80 w-4 bg-brand/60" />
+        </div>
 
-              <form action={`/${locale}/catalog`} role="search" className="mt-8 flex max-w-xl gap-2">
-                <label className="relative flex-1">
-                  <span className="sr-only">{t.common.search}</span>
-                  <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-subtle" aria-hidden />
-                  <input
-                    type="search"
-                    name="q"
-                    placeholder={t.common.searchPlaceholder}
-                    className="h-13 w-full rounded-xl border border-line-strong bg-surface/90 pl-12 pr-4 text-[15px] placeholder:text-subtle backdrop-blur focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25"
-                  />
-                </label>
-                <button type="submit" className={buttonStyles("primary", "lg", "h-13 px-5 sm:px-7")}>
-                  <span className="hidden sm:inline">{t.home.findParts}</span>
-                  <ArrowRight className="size-5 sm:hidden" aria-label={t.home.findParts} />
-                </button>
-              </form>
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-                <Link href={`/${locale}/vin-request`} className="font-medium text-text underline decoration-brand decoration-2 underline-offset-4 hover:text-brand">
-                  {t.home.vinCta}
-                </Link>
-                <a href={telHref(brand.contact.phoneE164)} className="text-muted hover:text-text">
-                  {t.common.callUs}: {brand.contact.phoneDisplay}
-                </a>
+        <div className="mx-auto grid max-w-7xl items-center gap-6 px-4 py-12 sm:px-6 sm:py-16 lg:min-h-[480px] lg:grid-cols-[1.35fr_1fr] lg:px-8">
+          <div className="animate-fade-up">
+            <h1 className="font-display text-[2rem] font-extrabold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.1rem] lg:[&>span]:whitespace-nowrap">
+              <span className="block">{t.home.heroLine1}</span>
+              <span className="block">
+                <span className="text-brand">{t.home.heroAccent}</span>
+                {t.home.heroLine2 && ` ${t.home.heroLine2}`}
+              </span>
+            </h1>
+            <p className="mt-5 max-w-lg text-base font-medium leading-relaxed text-zinc-200 sm:text-lg">{t.home.heroSubtitle}</p>
+
+            <form action={`/${locale}/catalog`} role="search" className="mt-8 flex max-w-xl overflow-hidden rounded-xl shadow-2xl shadow-black/50">
+              <label className="relative flex-1">
+                <span className="sr-only">{t.common.search}</span>
+                <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-zinc-900" aria-hidden />
+                <input
+                  type="search"
+                  name="q"
+                  placeholder={t.home.searchShort}
+                  className="h-14 w-full bg-white pl-12 pr-4 text-base text-zinc-900 placeholder:text-zinc-500 focus:outline-none"
+                />
+              </label>
+              <button type="submit" className="bg-brand px-6 text-base font-bold text-white transition-colors hover:bg-brand-hover sm:px-9">
+                {t.common.search}
+              </button>
+            </form>
+
+            {generations.length > 0 && (
+              <div className="mt-6 flex flex-wrap items-center gap-2.5">
+                <span className="mr-1 text-sm font-semibold">{t.home.generationsLabel}</span>
+                {generations.map((g) => (
+                  <Link
+                    key={g.id}
+                    href={`/${locale}/catalog?generation=${g.slug}`}
+                    title={`${g.name} · ${g.yearFrom}–${g.yearTo ?? ""}`}
+                    className="rounded-xl border border-line-strong bg-surface-2/80 px-4 py-2 text-sm font-semibold backdrop-blur transition-colors hover:border-brand hover:bg-brand"
+                  >
+                    {g.code}
+                  </Link>
+                ))}
               </div>
-            </div>
-
-            <div className="relative animate-fade-up [animation-delay:120ms]">
-              {brand.heroImage ? (
-                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-line">
-                  <Image src={brand.heroImage} alt="Toyota Camry" fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
-                </div>
-              ) : (
-                <SedanIllustration className="w-full drop-shadow-2xl lg:scale-110" />
-              )}
-            </div>
+            )}
           </div>
 
-          {/* Stats */}
-          <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-line pt-8 sm:max-w-2xl">
-            <div>
-              <dt className="text-xs text-subtle sm:text-sm">{t.home.statsParts}</dt>
-              <dd className="font-display text-2xl font-semibold sm:text-3xl">{totalInStock}+</dd>
+          {!hero && (
+            <div className="relative animate-fade-up [animation-delay:120ms]">
+              <SedanIllustration className="w-full drop-shadow-2xl lg:scale-115" />
             </div>
-            <div>
-              <dt className="text-xs text-subtle sm:text-sm">{t.home.statsGenerations}</dt>
-              <dd className="font-display text-2xl font-semibold sm:text-3xl">{camryGenerations}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-subtle sm:text-sm">{t.home.statsDelivery}</dt>
-              <dd className="font-display text-2xl font-semibold sm:text-3xl">24–72h</dd>
-            </div>
-          </dl>
+          )}
         </div>
       </section>
 
-      {/* ── Vehicle selector ─────────────────────────────────── */}
-      <section className="relative z-10 mx-auto -mt-px max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className={`${cardStyles} -translate-y-6 p-5 shadow-2xl shadow-black/40 sm:p-6`}>
-          <h2 className="mb-4 text-sm font-semibold">{t.home.vehicleTitle}</h2>
-          <VehicleSelector makes={vehicles} />
+      {/* ── Categories (light band) ──────────────────────────── */}
+      <section className="bg-[#f1f1f3] text-zinc-900">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <h2 className="mb-6 flex items-center gap-3 font-display text-xl font-bold sm:text-2xl">
+            <span className="h-7 w-1.5 rounded-full bg-brand" aria-hidden />
+            {t.home.categoriesTitle}
+          </h2>
+          <div className="grid gap-4 lg:grid-cols-[1fr_270px]">
+            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+              {categories.map((c) => {
+                const photo = categoryImage(c.slug);
+                return (
+                  <li key={c.id}>
+                    <Link
+                      href={`/${locale}/catalog?category=${c.slug}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-lg"
+                    >
+                      <span className="relative block aspect-[4/3] bg-gradient-to-b from-zinc-50 to-zinc-200/80">
+                        <Image
+                          src={photo ?? `/parts/dark/${c.icon}.svg`}
+                          alt=""
+                          fill
+                          unoptimized={!photo}
+                          sizes="(min-width: 1280px) 160px, (min-width: 640px) 25vw, 50vw"
+                          className={photo ? "object-cover" : "object-contain p-4 transition-transform duration-300 group-hover:scale-105"}
+                        />
+                      </span>
+                      <span className="flex flex-1 items-center justify-between gap-2 px-3 py-3">
+                        <span className="text-sm font-semibold leading-snug">{localized(c.name, locale)}</span>
+                        <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-zinc-300 text-zinc-800 transition-colors group-hover:border-brand group-hover:bg-brand group-hover:text-white">
+                          <ArrowRight className="size-3.5" aria-hidden />
+                        </span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <Link
+              href={`/${locale}/catalog`}
+              className="group relative isolate flex min-h-56 flex-col justify-end overflow-hidden rounded-2xl bg-gradient-to-br from-[#2a2a30] via-[#141417] to-black p-6 text-white shadow-xl"
+            >
+              <div className="pointer-events-none absolute -right-10 top-6 -z-10 flex rotate-[35deg] gap-3" aria-hidden>
+                <span className="h-72 w-6 bg-brand/80" />
+                <span className="h-72 w-2.5 bg-brand/50" />
+              </div>
+              <div className="pointer-events-none absolute -left-16 bottom-10 -z-10 h-1 w-64 rotate-[-25deg] bg-brand/70" aria-hidden />
+              <p className="font-display text-3xl font-black tracking-[0.12em] text-brand">TOYOTA</p>
+              <p className="font-display text-3xl font-bold">{t.home.promoTitle}</p>
+              <p className="mt-3 text-[15px] font-medium leading-snug text-zinc-200">{t.home.promoText}</p>
+              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-white/90 group-hover:text-white">
+                {t.nav.allParts} <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden />
+              </span>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ── Categories ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-8 max-w-2xl">
-          <h2 className={sectionTitle}>{t.home.categoriesTitle}</h2>
-          <p className="mt-2 text-muted">{t.home.categoriesText}</p>
+      {/* ── Benefits strip ───────────────────────────────────── */}
+      <section className="border-b border-line bg-surface">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:px-8">
+          <ul className="grid flex-1 gap-6 sm:grid-cols-3 sm:gap-0">
+            {[
+              { icon: ShieldCheck, text: t.home.stripWarranty },
+              { icon: Truck, text: t.home.stripDelivery },
+              { icon: Headset, text: t.home.stripSupport },
+            ].map(({ icon: Icon, text }, i) => (
+              <li key={text} className={`flex items-center gap-4 sm:px-6 ${i > 0 ? "sm:border-l sm:border-line-strong" : "sm:pl-0"}`}>
+                <Icon className="size-11 shrink-0 text-brand" strokeWidth={1.75} aria-hidden />
+                <span className="max-w-[12rem] text-[15px] font-semibold leading-snug">{text}</span>
+              </li>
+            ))}
+          </ul>
+          <Link href={`/${locale}/vin-request`} className={buttonStyles("primary", "lg", "h-14 shrink-0 px-7 text-[15px] font-bold")}>
+            <Send className="size-5" aria-hidden />
+            {t.home.stripCta}
+          </Link>
         </div>
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((c) => (
-            <li key={c.id}>
-              <Link
-                href={`/${locale}/catalog?category=${c.slug}`}
-                className="group flex h-full flex-col items-start gap-3 rounded-2xl border border-line bg-surface p-4 transition-colors hover:border-brand/50 hover:bg-surface-2"
-              >
-                <span className="relative size-12 overflow-hidden rounded-xl bg-surface-3">
-                  <Image src={`/parts/${c.icon}.svg`} alt="" fill unoptimized className="object-contain p-1.5 opacity-90 transition-transform group-hover:scale-110" />
-                </span>
-                <span className="text-sm font-medium leading-snug">{c.name[locale]}</span>
-                <span className="mt-auto text-xs text-subtle">{fmt(t.home.partsCount, { count: counts[c.slug] ?? 0 })}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
       </section>
 
       {/* ── Featured ─────────────────────────────────────────── */}
       {featured.items.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <section className="mx-auto max-w-7xl px-4 pt-14 sm:px-6 lg:px-8">
           <SectionHeader title={t.home.featuredTitle} href={`/${locale}/catalog`} linkLabel={t.common.viewAll} />
           <ProductGrid products={featured.items} locale={locale} />
         </section>
       )}
 
-      {/* ── Benefits ─────────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h2 className={`${sectionTitle} mb-8`}>{t.home.benefitsTitle}</h2>
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-          {t.home.benefits.map((b, i) => {
-            const Icon = BENEFIT_ICONS[i];
-            return (
-              <div key={b.title} className="bg-surface p-6">
-                <Icon className="mb-4 size-6 text-brand" aria-hidden />
-                <h3 className="font-medium">{b.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{b.text}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
       {/* ── Recent ───────────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pt-14 sm:px-6 lg:px-8">
         <SectionHeader title={t.home.recentTitle} href={`/${locale}/catalog?sort=newest`} linkLabel={t.common.viewAll} />
         <ProductGrid products={recent.items} locale={locale} />
       </section>
 
       {/* ── Contact ──────────────────────────────────────────── */}
-      <section id="contact" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-12 sm:px-6 lg:px-8">
+      <section id="contact" className="mx-auto max-w-7xl scroll-mt-32 px-4 pt-14 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-line bg-surface">
           <div className="hero-glow absolute inset-0 opacity-70" aria-hidden />
           <div className="relative grid gap-10 p-6 sm:p-10 lg:grid-cols-2 lg:p-14">
@@ -237,7 +265,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 function SectionHeader({ title, href, linkLabel }: { title: string; href: string; linkLabel: string }) {
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
-      <h2 className={sectionTitle}>{title}</h2>
+      <h2 className={`${sectionTitle} flex items-center gap-3`}>
+        <span className="h-7 w-1.5 rounded-full bg-brand" aria-hidden />
+        {title}
+      </h2>
       <Link href={href} className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-muted hover:text-text">
         {linkLabel} <ArrowRight className="size-4" aria-hidden />
       </Link>

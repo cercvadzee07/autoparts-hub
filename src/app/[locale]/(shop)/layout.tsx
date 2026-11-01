@@ -13,7 +13,7 @@ export default async function ShopLayout({ children, params }: LayoutProps<"/[lo
   const categories = await getRepository().getCategories();
   return (
     <>
-      <Header />
+      <Header categories={categories} />
       <main id="main" className="flex-1">
         {children}
       </main>

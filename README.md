@@ -140,7 +140,11 @@ supabase/
 - **Brand name, phone, address, hours, order/inventory prefixes:** `src/config/brand.ts`
 - **Colors:** the `--brand`, `--bg`, `--surface` and related tokens at the top of `src/app/globals.css`
 - **Logo:** `src/components/brand/logo.tsx` and `src/app/icon.svg`
-- **Hero photo:** put a real photo, e.g. `public/images/hero-camry.jpg`, and set `brand.heroImage = "/images/hero-camry.jpg"`. Until then a vector sedan illustration is shown.
+- **Homepage photos:** these are picked up automatically after you restart `npm run dev` or rebuild:
+  - `public/images/hero.jpg` is the hero background. A wide, dark Camry photo works best.
+  - `public/images/categories/<slug>.jpg` is a category card photo, e.g. `lighting.jpg`, `engine.jpg`, `body.jpg`, `mirrors.jpg`.
+  - `.png`, `.webp` and `.avif` work too. Until a photo exists, the built-in illustration is shown.
+- **Logo tagline / wordmark:** `brand.tagline` and `brand.wordmark` in `src/config/brand.ts`
 - **Text / translations:** `src/i18n/dictionaries/{ka,en,ru}.ts`. `en.ts` defines the shape, and TypeScript fails the build if a key is missing in another language.
 - **Add a language:** add it to `locales` in `src/i18n/config.ts`, create a dictionary, then add `title_xx`/`description_xx` columns, or move the translations into a separate table.
 - **Vehicles & categories:** edit them in the database, or in `seed.ts` and then run `npm run seed:sql`.
