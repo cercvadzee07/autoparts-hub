@@ -40,8 +40,11 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       "@type": "PostalAddress",
       streetAddress: brand.contact.address[locale],
       addressLocality: brand.contact.city,
+      postalCode: brand.contact.postalCode,
       addressCountry: "GE",
     },
+    geo: { "@type": "GeoCoordinates", latitude: brand.contact.geo.lat, longitude: brand.contact.geo.lng },
+    hasMap: brand.contact.mapUrl,
     openingHours: "Mo-Sa 10:00-19:00",
     priceRange: "₾₾",
     currenciesAccepted: "GEL",
@@ -265,6 +268,17 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
                 <dd className="mt-3 text-sm">{brand.contact.hours[locale]}</dd>
               </div>
             </dl>
+          </div>
+          {/* Embedded map of the shop (no API key needed). */}
+          <div className="relative h-72 border-t border-line sm:h-96">
+            <iframe
+              title={`${t.home.address}: ${brand.contact.address[locale]}`}
+              src={`https://maps.google.com/maps?q=${brand.contact.geo.lat},${brand.contact.geo.lng}&z=16&hl=${locale}&output=embed`}
+              className="absolute inset-0 h-full w-full grayscale-[35%] invert-[0.9] hue-rotate-180"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>

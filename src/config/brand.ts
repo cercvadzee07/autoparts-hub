@@ -25,11 +25,14 @@ export const brand = {
     city: "Tbilisi",
     /** Localized street address. */
     address: {
-      ka: "თბილისი, დიდი დიღომი, ავტონაწილების ბაზრობა",
-      en: "Didi Dighomi auto parts market, Tbilisi",
-      ru: "Тбилиси, Диди Дигоми, рынок автозапчастей",
+      ka: "თბილისი, ნავთლუღი, წმ. ქეთევან დედოფლის გამზირი",
+      en: "Tsminda Ketevan Dedoflis Ave, Navtlughi, Tbilisi",
+      ru: "Тбилиси, Навтлуги, проспект Цминда Кетеван Дедофлис",
     },
-    mapUrl: "https://maps.google.com/?q=Tbilisi+Didi+Dighomi",
+    postalCode: "0144",
+    /** Shop location (the box). Used for the embedded map and Google structured data. */
+    geo: { lat: 41.685269, lng: 44.846962 },
+    mapUrl: "https://maps.app.goo.gl/nTWRts5sFM4xszoJ8",
     hours: {
       ka: "ორშ–შაბ, 10:00–19:00",
       en: "Mon–Sat, 10:00–19:00",
