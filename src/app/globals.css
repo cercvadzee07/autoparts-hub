@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Change the brand here — every component reads these.
+ * The storefront is intentionally dark-only (graphite + deep red).
+ */
+:root {
+  --brand: #c8102e;
+  --brand-hover: #a80d26;
+  --brand-soft: rgb(200 16 46 / 0.14);
+  --bg: #0a0a0c;
+  --surface: #121215;
+  --surface-2: #19191d;
+  --surface-3: #222228;
+  --line: #2a2a31;
+  --line-strong: #3a3a43;
+  --text: #f4f4f5;
+  --muted: #a1a1aa;
+  --subtle: #71717a;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --info: #60a5fa;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --font-sans: var(--font-inter), var(--font-georgian), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-latin), var(--font-georgian), var(--font-inter), ui-sans-serif, sans-serif;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--brand);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Subtle grain/vignette for hero sections */
+.hero-glow {
+  background:
+    radial-gradient(60% 80% at 75% 40%, rgb(200 16 46 / 0.18), transparent 70%),
+    radial-gradient(40% 60% at 10% 100%, rgb(255 255 255 / 0.04), transparent 70%);
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s var(--ease-out-quart) both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-toast {
+  animation: toast-in 0.25s var(--ease-out-quart) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23a1a1aa' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  appearance: none;
+}
