@@ -106,7 +106,7 @@ const en = {
     intro:
       "We are a Tbilisi auto dismantling shop that works with one car only — the Toyota Camry. Every part comes from vehicles we dismantle ourselves, is inspected, photographed and listed with its OEM number.",
     points: [
-      { title: "Camry only", text: "From XV30 to XV80 — we know every generation and which parts interchange." },
+      { title: "Camry only", text: "2015–2017 (XV55) and 2018–2025 (XV70) models — used original and new (Taiwan-made) parts." },
       { title: "Real photos", text: "Each listing shows the actual part you will receive, not a catalog picture." },
       { title: "Checked before sale", text: "Parts are inspected and tested; we confirm fitment by phone before shipping." },
       { title: "Visit the shop", text: "See the part in person in Tbilisi, or get it delivered anywhere in Georgia." },
@@ -161,9 +161,9 @@ const en = {
     noImage: "Photo coming soon",
   },
   conditions: {
-    new: "New",
-    like_new: "Like new",
-    used: "Used",
+    new: "New (Taiwan)",
+    like_new: "Used, excellent",
+    used: "Used original",
     damaged: "Minor damage",
   },
   productStatus: {

@@ -245,6 +245,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
                 <a href={telHref(brand.contact.phoneE164)} className={buttonStyles("primary", "lg")}>
                   <PhoneCall className="size-5" aria-hidden />
                   {brand.contact.phoneDisplay}
+                  <span className="font-normal opacity-80">· {brand.contact.person[locale]}</span>
                 </a>
                 <a href={`https://wa.me/${brand.contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className={buttonStyles("outline", "lg")}>
                   {t.common.whatsapp}

@@ -18,17 +18,19 @@ export const brand = {
   inventoryPrefix: "AP",
   contact: {
     /** Display form and E.164 form (for tel: and WhatsApp links). */
-    phoneDisplay: "+995 555 00 00 00",
-    phoneE164: "+995555000000",
-    whatsapp: "995555000000",
+    phoneDisplay: "+995 599 74 74 97",
+    phoneE164: "+995599747497",
+    whatsapp: "995599747497",
     email: "info@autoparts.ge",
     city: "Tbilisi",
     /** Localized street address. */
     address: {
-      ka: "თბილისი, ნავთლუღი, წმ. ქეთევან დედოფლის გამზირი",
-      en: "Tsminda Ketevan Dedoflis Ave, Navtlughi, Tbilisi",
-      ru: "Тбилиси, Навтлуги, проспект Цминда Кетеван Дедофлис",
+      ka: "თბილისი, ისანი, ქეთევან წამებულის 71 (ქვედა დაშლილები), მე-3 რიგი, ჯიხური N183",
+      en: "71 Ketevan Tsamebuli Ave, Isani, Tbilisi — lower dismantling market, row 3, booth N183",
+      ru: "Тбилиси, Исани, пр. Кетеван Цамебули 71 (нижние разборки), 3-й ряд, будка №183",
     },
+    /** Who answers the phone. */
+    person: { ka: "ხვიჩა", en: "Khvicha", ru: "Хвича" },
     postalCode: "0144",
     /** Shop location (the box). Used for the embedded map and Google structured data. */
     geo: { lat: 41.685269, lng: 44.846962 },

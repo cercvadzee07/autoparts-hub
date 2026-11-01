@@ -1,5 +1,6 @@
 /**
- * Initial catalog data: one store, categories, the Toyota Camry generations and a
+ * Initial catalog data: one store, categories, the Camry generations the shop
+ * dismantles (XV55 2015–2017, XV70 2018–2025) and a
  * sample inventory of used Camry parts.
  *
  * This file is dependency-free on purpose — it is used by the demo database
@@ -12,7 +13,7 @@ export const SEED_STORE = {
   id: "11111111-1111-4111-8111-111111111111",
   slug: "autoparts-hub-tbilisi",
   name: "AutoParts Hub — Tbilisi",
-  phone: "+995555000000",
+  phone: "+995599747497",
   city: "Tbilisi",
 };
 
@@ -49,12 +50,8 @@ export const SEED_GENERATIONS: {
   yearFrom: number;
   yearTo: number | null;
 }[] = [
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv30", name: "Camry XV30", code: "XV30", yearFrom: 2001, yearTo: 2006 },
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv40", name: "Camry XV40", code: "XV40", yearFrom: 2006, yearTo: 2011 },
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv50", name: "Camry XV50", code: "XV50", yearFrom: 2011, yearTo: 2014 },
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv55", name: "Camry XV55", code: "XV55", yearFrom: 2014, yearTo: 2017 },
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv70", name: "Camry XV70", code: "XV70", yearFrom: 2017, yearTo: 2024 },
-  { modelId: SEED_MODELS[0].id, slug: "camry-xv80", name: "Camry XV80", code: "XV80", yearFrom: 2024, yearTo: null },
+  { modelId: SEED_MODELS[0].id, slug: "camry-xv55", name: "Camry XV55", code: "XV55", yearFrom: 2015, yearTo: 2017 },
+  { modelId: SEED_MODELS[0].id, slug: "camry-xv70", name: "Camry XV70", code: "XV70", yearFrom: 2018, yearTo: 2025 },
 ].map((g, i) => ({ ...g, id: uuid("d0000000", i + 1) }));
 
 const cat = (slug: string) => SEED_CATEGORIES.find((c) => c.slug === slug)!.id;
@@ -100,7 +97,7 @@ function description(title: L, car: string, condition: string): L {
   const extra: Record<string, L> = {
     like_new: { ka: " მდგომარეობა — თითქმის ახალი.", en: " Condition is close to new.", ru: " Состояние — почти новое." },
     damaged: { ka: " აქვს მცირე დაზიანება, იხილეთ ფოტოები.", en: " Has minor damage — see photos.", ru: " Есть незначительные повреждения — смотрите фото." },
-    new: { ka: " ახალი, შეფუთვაში.", en: " Brand new, in original packaging.", ru: " Новая, в оригинальной упаковке." },
+    new: { ka: " ახალი ნაწილი, ტაივანური წარმოების.", en: " New part, made in Taiwan.", ru: " Новая деталь, производство Тайвань." },
   };
   const e = extra[condition] ?? { ka: "", en: "", ru: "" };
   return {
@@ -138,7 +135,8 @@ function buildProducts(): SeedProduct[] {
   let n = 0;
   const now = Date.UTC(2026, 9, 30, 12, 0, 0);
   for (const t of TEMPLATES) {
-    for (const gSlug of t.gens) {
+    // The shop dismantles Camry 2015–2017 (XV55) and 2018–2025 (XV70) only.
+    for (const gSlug of t.gens.filter((s) => SEED_GENERATIONS.some((g) => g.slug === s))) {
       n += 1;
       const g = gen(gSlug);
       const yearTo = g.yearTo ?? 2026;
