@@ -122,10 +122,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
               <div className="absolute inset-x-[6%] bottom-[2%] h-[14%] rounded-[50%] bg-black/80 blur-xl" aria-hidden />
               <div className="absolute inset-x-[15%] bottom-[-4%] h-[18%] rounded-[50%] bg-brand/25 blur-3xl" aria-hidden />
               <Image
-                src="/images/hero-car.webp"
+                src="/images/hero-camry-red.webp"
                 alt="Toyota Camry"
-                width={1600}
-                height={954}
+                width={820}
+                height={281}
                 priority
                 sizes="(min-width: 1024px) 45vw, 100vw"
                 className="relative w-full drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"
